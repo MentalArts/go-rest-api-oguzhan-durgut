@@ -1,65 +1,41 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"log"
+	"mentalartsapi/handlers"
+	"mentalartsapi/models"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-type Response struct {
-	Msg string `json:"message"`
-}
-
 func main() {
-	router := gin.Default()
-	router.GET("/ping", handlePing)
-	router.GET("/hello", handleHello)
-	router.GET("/helloWithPayload", handleHelloWithPayload)
-	router.Run(":8000")
-}
 
-func handlePing(c *gin.Context) {
-	res := Response{Msg: "pong"}
-	c.JSON(http.StatusOK, res)
-}
+	dsn := "host=localhost user=postgres password=123abcd dbname=postgres port=5432 sslmode=disable"
 
-func handleHello(c *gin.Context) {
-	name := c.Query("name")
-
-	var msg string
-	if name != "" {
-		msg = fmt.Sprintf("Welcome, %s", name)
-	} else {
-		msg = "Welcome, user"
-	}
-
-	c.String(http.StatusOK, msg)
-}
-
-type DTO struct {
-	Name    string `json:"name"`
-	Surname string `json:"surname"`
-}
-
-func handleHelloWithPayload(c *gin.Context) {
-	// Binding (Get Payload from request)
-	var dto DTO
-	err := c.BindJSON(&dto)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		c.String(http.StatusBadRequest, "bad request")
-		return
+		log.Fatalf("Could not connect database: %v", err)
 	}
 
-	// Validaton (Validate payload)
-	if dto.Name == "" {
-		c.String(http.StatusBadRequest, "empty name is not accepted")
-		return
-	}
+	db.AutoMigrate(&models.Author{})
 
-	msg := fmt.Sprintf("Welcome, %s %s", dto.Name, dto.Surname)
-	c.String(http.StatusOK, msg)
+	handlers.InitDB(db)
 
+	router := gin.Default()
+
+	router.GET("/ping", handlers.HandlePing)
+	router.GET("/hello", handlers.HandleHello)
+	router.GET("/helloWithPayload", handlers.HandleHelloWithPayload)
+
+	router.POST("/author", handlers.CreateAuthor)
+	router.GET("/author", handlers.GetAllAuthors)
+	router.GET("/author/:id", handlers.GetAuthor)
+	router.PUT("/author/:id", handlers.UpdateAuthor)
+	router.DELETE("/author/:id", handlers.DeleteAuthor)
+
+	router.Run(":8000")
 }
 
 // Vanilla implementation
