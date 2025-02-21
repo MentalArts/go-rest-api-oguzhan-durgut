@@ -1,5 +1,9 @@
 # Project: Building a Simple REST API with Go and Gin-Gonic
 
+# DEADLINE: 09.03.2025
+
+# CONTACT: oguzhan.durgut@btsgrp.com
+
 ## Description
 
 The goal of this project is to develop a basic REST API using the Go programming language and the Gin-Gonic framework. The API should be capable of interacting with a database (e.g. PostgreSQL and SQLite). Additionally, the project should utilize containerization to develop the application within a containerized environment.
