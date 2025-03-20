@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"mentalartsapi/dto"
+	"mentalartsapi/pkg/dto"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,4 +1,15 @@
 services:
+
+    jaeger:
+        image: jaegertracing/all-in-one:1.56
+        environment:
+        - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+        - JAEGER_DISABLED=true 
+        ports:
+        - "16686:16686"  # UI port
+        - "4318:4318"    # OTLP HTTP receiver port
+        networks:
+        - app-network
     db:
         image: postgres:latest
         env_file: .env
@@ -15,5 +26,7 @@ volumes:
     pgdata:
 
 networks:
+    app-network:
+        driver: bridge
     db_network:
         driver: bridge

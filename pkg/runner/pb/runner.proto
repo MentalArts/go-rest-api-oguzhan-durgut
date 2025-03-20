@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package runner;
+
+option go_package = "mentalartsapi/pkg/runner/pb";
+
+// RunRequest represents the input for code execution
+message RunRequest {
+  string code = 1;        // The code to be executed
+  string language = 2;    // Programming language (e.g., "go", "python", etc.)
+  int32 timeout = 3;      // Execution timeout in seconds
+}
+
+// RunResponse represents the execution results
+message RunResponse {
+  string output = 1;      // Standard output from the execution
+  string error = 2;       // Error output if any
+  int32 exit_code = 3;    // Process exit code
+  int64 execution_time = 4; // Execution time in milliseconds
+}
+
+// Runner service definition
+service RunnerService {
+  // Run executes the provided code and returns the results
+  rpc Run(RunRequest) returns (RunResponse) {}
+}

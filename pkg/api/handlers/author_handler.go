@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"mentalartsapi/models"
+	"mentalartsapi/pkg/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
